@@ -1,2 +1,3 @@
 .DS_Store
 .claude/
+.range_server.py
