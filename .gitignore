@@ -1,3 +1,7 @@
 .DS_Store
 .claude/
 .range_server.py
+
+# Local video backups (master source + previous cuts) — not deployed
+video_source.mp4
+video_.mp4
