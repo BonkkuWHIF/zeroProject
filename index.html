@@ -202,11 +202,13 @@
       startLoop();
     }
 
+    let pendingSeek = false; // a frame wanted to seek while one was in flight
+
     // Ease the displayed time toward the scroll target so fast flicks
     // don't snap. Stops itself once it's close enough to idle.
     function tick() {
       const diff = targetTime - currentTime;
-      if (Math.abs(diff) < 0.01) {
+      if (Math.abs(diff) < 0.005) {
         currentTime = targetTime;
         applyTime();
         rafId = null;
@@ -218,12 +220,23 @@
     }
 
     function applyTime() {
+      if (video.readyState < 1) return;
+      // Never stack a new seek on top of one still decoding — on mobile that
+      // backs up the decoder and causes the stutter. Defer and re-fire once
+      // the in-flight seek reports done (see the "seeked" handler).
+      if (video.seeking) { pendingSeek = true; return; }
       // Guard against seeking past the very end (can stall on some browsers).
       const t = Math.min(currentTime, Math.max(0, duration - 0.05));
-      if (video.readyState >= 1) {
+      if (Math.abs(video.currentTime - t) > 0.001) {
         try { video.currentTime = t; } catch (_) {}
       }
     }
+
+    // When a seek finishes, immediately apply the latest target if scroll
+    // moved on while we were waiting. Keeps playback glued to the finger.
+    video.addEventListener("seeked", () => {
+      if (pendingSeek) { pendingSeek = false; applyTime(); }
+    });
 
     function startLoop() {
       if (rafId == null) rafId = requestAnimationFrame(tick);
