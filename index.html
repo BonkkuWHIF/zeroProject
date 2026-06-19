@@ -6,7 +6,7 @@
   <title>Xi Rong Project</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
 
   <!-- ── Google Analytics 4 ─────────────────────────────────────
        Swap GA_ID to point at a different GA4 property. Leave it blank
@@ -30,7 +30,7 @@
     :root {
       /* How many viewport-heights of scrolling drive the full video.
          Higher = slower, more deliberate scrub. */
-      --scroll-length: 4;
+      --scroll-length: 5;
       --accent: #4fd1c5;
     }
 
@@ -41,7 +41,7 @@
       padding: 0;
       background: #000;
       color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Kanit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -148,50 +148,60 @@
       word-break: break-all;
     }
 
-    /* ── Always-on centered branding ───────────────────────────── */
-    #brand {
+    /* ── Scroll-synced "classified file" overlay ──────────────────
+       A stack of fixed panels. JS sets each panel's opacity based on
+       scroll progress so text fades in/out as the video scrubs. */
+    #panels {
       position: fixed;
       inset: 0;
       z-index: 15;               /* over video, under loading overlay */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px;
       pointer-events: none;      /* let scroll/touch pass through */
     }
     /* Soft spotlight so text stays legible over any frame. */
-    #brand::before {
+    #panels::before {
       content: "";
       position: absolute;
       inset: 0;
       background: radial-gradient(
-        ellipse 70% 55% at 50% 50%,
-        rgba(0, 0, 0, 0.55) 0%,
-        rgba(0, 0, 0, 0.25) 45%,
-        transparent 75%
+        ellipse 80% 65% at 50% 50%,
+        rgba(0, 0, 0, 0.62) 0%,
+        rgba(0, 0, 0, 0.32) 45%,
+        transparent 78%
       );
     }
-    .brand-inner {
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 28px;
+      opacity: 0;                /* JS drives this */
+      will-change: opacity, transform;
+      /* Latin glyphs use Space Grotesk; Thai falls back to Kanit. */
+      font-family: "Space Grotesk", "Kanit", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .panel-inner {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: clamp(18px, 3vh, 30px);
-      animation: floaty 6s ease-in-out infinite;
-    }
-    @keyframes floaty {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-10px); }
+      gap: clamp(14px, 2.4vh, 24px);
+      max-width: 720px;
+      transform: translateY(18px);
+      transition: transform 0.1s linear;
     }
 
+    /* ── Type styles ───────────────────────────────────────────── */
     .title {
       margin: 0;
-      font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 700;
       font-size: clamp(2.6rem, 12vw, 6rem);
       line-height: 0.95;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
       background: linear-gradient(180deg, #ffffff 0%, #cfeee9 40%, var(--accent) 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -201,21 +211,126 @@
     }
     .title span { display: block; }
 
+    .kicker {
+      margin: 0;
+      font-size: clamp(0.7rem, 2.6vw, 0.9rem);
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-shadow: 0 0 14px rgba(79, 209, 197, 0.5);
+    }
+    .heading {
+      margin: 0;
+      font-weight: 700;
+      font-size: clamp(1.7rem, 6.5vw, 3.1rem);
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 22px rgba(0, 0, 0, 0.7);
+    }
+    .lead {
+      margin: 0;
+      font-family: "Kanit", "Space Grotesk", sans-serif;
+      font-weight: 400;
+      font-size: clamp(1rem, 3.6vw, 1.35rem);
+      line-height: 1.75;
+      color: #e7f6f3;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+    }
+    .mono {
+      font-family: "Space Grotesk", ui-monospace, monospace;
+      letter-spacing: 0.04em;
+    }
+
+    /* Data readout (Name : Xi Rong …) */
+    .readout {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+      font-size: clamp(1rem, 3.4vw, 1.3rem);
+    }
+    .readout li {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 10px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .readout .k { color: #9fb7b3; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78em; align-self: center; }
+    .readout .v { color: #fff; font-weight: 700; }
+    .readout .v.active { color: var(--accent); }
+
+    /* Bulleted abilities / anomaly list */
+    .lines {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+      font-family: "Kanit", "Space Grotesk", sans-serif;
+      font-weight: 400;
+      font-size: clamp(1rem, 3.4vw, 1.3rem);
+      line-height: 1.55;
+      color: #eafaf7;
+    }
+    .lines li { position: relative; padding-left: 26px; text-align: left; }
+    .lines li::before {
+      content: "›";
+      position: absolute;
+      left: 4px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .lines.warn li::before { content: "⚠"; font-size: 0.85em; }
+
+    /* The big "Not Found" beat */
+    .verdict {
+      margin: 0;
+      font-weight: 700;
+      font-size: clamp(1.8rem, 8vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 34px rgba(0, 0, 0, 0.9);
+    }
+    .verdict .nf {
+      display: block;
+      color: #ff5a5a;
+      letter-spacing: 0.14em;
+      text-shadow: 0 0 26px rgba(255, 60, 60, 0.55);
+      animation: blink 1.6s steps(1) infinite;
+    }
+    @keyframes blink { 0%, 70% { opacity: 1; } 71%, 85% { opacity: 0.25; } }
+
+    .release {
+      margin: 4px 0;
+      font-weight: 700;
+      font-size: clamp(1.4rem, 6vw, 2.6rem);
+      letter-spacing: 0.18em;
+      color: #cfeee9;
+      text-shadow: 0 0 22px rgba(79, 209, 197, 0.45);
+    }
+
+    /* ── Social / WHIF chips (bottom of final panel) ───────────── */
     .meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 10px 14px;
-      font-family: "Space Grotesk", -apple-system, sans-serif;
+      margin-top: 8px;
     }
     .chip {
-      pointer-events: auto;       /* re-enable clicks on the links */
+      pointer-events: auto;
       display: inline-flex;
       align-items: center;
       gap: 7px;
       padding: 9px 16px;
-      font-size: clamp(12px, 2.6vw, 15px);
+      font-size: clamp(12px, 2.6vw, 14px);
       font-weight: 500;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -239,6 +354,15 @@
     }
     .chip svg { width: 14px; height: 14px; fill: currentColor; flex: none; }
     .chip .hash { color: var(--accent); font-weight: 700; }
+    /* WHIF brand logo inside the whif.io chip. */
+    .chip .whif-logo {
+      width: 20px;
+      height: 20px;
+      flex: none;
+      border-radius: 6px;
+      object-fit: cover;
+      margin: -2px 0;
+    }
   </style>
 </head>
 <body>
@@ -256,21 +380,75 @@
     </div>
   </div>
 
-  <div id="brand">
-    <div class="brand-inner">
-      <h1 class="title"><span>Xi Rong</span><span>Project</span></h1>
-      <div class="meta">
-        <a class="chip" href="https://www.whif.io" target="_blank" rel="noopener">www.whif.io</a>
-        <a class="chip" href="https://x.com/hashtag/XiRongProject" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          <span class="hash">#XiRongProject</span>
-        </a>
-        <a class="chip" href="https://x.com/NoHoneyBonk" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          By @NoHoneyBonk
-        </a>
+  <div id="panels">
+    <!-- 1 · HERO ────────────────────────────────────────────── -->
+    <section class="panel" data-start="0.00" data-end="0.10">
+      <div class="panel-inner">
+        <p class="kicker">Classified File</p>
+        <h1 class="title"><span>XI RONG</span><span>PROJECT</span></h1>
       </div>
-    </div>
+    </section>   
+
+    <!-- 3 · KNOWN INFORMATION ───────────────────────────────── -->
+    <section class="panel" data-start="0.18" data-end="0.35">
+      <div class="panel-inner">
+        <p class="kicker">Known Information</p>
+        <ul class="readout mono">
+          <li><span class="k">Name</span><span class="v">Xi Rong</span></li>
+          <li><span class="k">Age</span><span class="v">Unknown</span></li>
+          <li><span class="k">Origin</span><span class="v">Unknown</span></li>
+          <li><span class="k">Current Status</span><span class="v active">Active</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5 · ANOMALY REPORT ──────────────────────────────────── -->
+    <section class="panel" data-start="0.56" data-end="0.70">
+      <div class="panel-inner">
+        <p class="kicker">Anomaly Report</p>
+        <ul class="lines warn">
+          <li>ไม่พบข้อมูลทางชีวภาพ</li>
+          <li>ไม่พบประวัติทางการแพทย์</li>
+          <li>ไม่พบหลักฐานการดำรงอยู่ก่อนหน้า</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 6 · BIOLOGICAL BODY : NOT FOUND (the held beat) ──────── -->
+    <section class="panel" data-start="0.85" data-end="0.95">
+      <div class="panel-inner">
+        <p class="kicker">Physical Status</p>
+        <p class="verdict mono">
+          Biological Body :
+          <span class="nf">NOT FOUND</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 7 · QUESTION + CTA ──────────────────────────────────── -->
+    <section class="panel" data-start="0.95" data-end="1.2">
+      <div class="panel-inner">
+        <p class="lead">
+          If no body remains,<br />
+          then what exactly is <strong>Xi Rong</strong>?
+        </p>
+        <p class="release mono">RELEASE · 24 JUNE 2026</p>
+        <div class="meta">
+          <a class="chip" href="https://www.whif.io/profile/Bonkku" target="_blank" rel="noopener">
+            <img class="whif-logo" src="whif-logo.png" alt="" />
+            www.whif.io
+          </a>
+          <a class="chip" href="https://x.com/hashtag/XiRongProject" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span class="hash">#XiRongProject</span>
+          </a>
+          <a class="chip" href="https://x.com/NoHoneyBonk" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            By @NoHoneyBonk
+          </a>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div id="hint">Scroll to play ↓</div>
@@ -323,6 +501,36 @@
       return Math.min(1, Math.max(0, window.scrollY / max));
     }
 
+    // ── Scroll-synced text panels ──────────────────────────────
+    // Each panel owns a [start, end] slice of scroll progress. It fades
+    // up over the first `FADE`, holds, then fades out over the last `FADE`.
+    const panels = Array.from(document.querySelectorAll(".panel")).map((el) => ({
+      el,
+      inner: el.querySelector(".panel-inner"),
+      start: parseFloat(el.dataset.start),
+      end: parseFloat(el.dataset.end),
+    }));
+    const FADE = 0.035; // fraction of the slice spent fading
+
+    function renderPanels(p) {
+      for (const s of panels) {
+        const span = s.end - s.start;
+        const fade = Math.min(FADE, span / 2);
+        let o = 0;
+        if (p >= s.start && p <= s.end) {
+          const fromStart = p - s.start;
+          const toEnd = s.end - p;
+          o = Math.min(1, fromStart / fade, toEnd / fade);
+        }
+        s.el.style.opacity = o.toFixed(3);
+        // Gentle rise as the panel appears, settle as it leaves.
+        s.inner.style.transform = "translateY(" + ((1 - o) * 18).toFixed(1) + "px)";
+        // Faded-out panels mustn't intercept taps meant for links below them.
+        // (The CTA/chips keep their own pointer-events:auto in CSS.)
+        s.el.style.visibility = o < 0.02 ? "hidden" : "visible";
+      }
+    }
+
     function onScroll() {
       if (!ready) return;
       const p = scrollProgress();
@@ -330,6 +538,7 @@
       fill.style.width = (p * 100).toFixed(2) + "%";
       if (p > 0.02) hint.classList.add("hidden");
       else hint.classList.remove("hidden");
+      renderPanels(p);
       trackScroll(p);
       startLoop();
     }
