@@ -308,12 +308,52 @@
 
     .release {
       margin: 4px 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45em;
       font-weight: 700;
       font-size: clamp(1.4rem, 6vw, 2.6rem);
       letter-spacing: 0.18em;
       color: #cfeee9;
       text-shadow: 0 0 22px rgba(79, 209, 197, 0.45);
     }
+
+    /* Flag images (release + coming-soon). Emoji flags don't render on
+       Windows, so we use real images for consistency everywhere. */
+    .flag {
+      width: auto;
+      border-radius: 3px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.55);
+      vertical-align: middle;
+    }
+    .release .flag { height: 0.82em; }
+
+    /* "Coming soon" languages row, just under the release date. */
+    .coming-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      margin-top: 2px;
+    }
+    .cs-label {
+      font-size: clamp(0.66rem, 2.6vw, 0.82rem);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #9fb7b3;
+    }
+    .cs-flags {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cs-flags .flag {
+      height: clamp(15px, 3.6vw, 20px);
+      opacity: 0.82;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .cs-flags .flag:hover { opacity: 1; transform: translateY(-2px); }
 
     /* ── Social / WHIF chips (bottom of final panel) ───────────── */
     .meta {
@@ -432,7 +472,19 @@
           If no body remains,<br />
           then what exactly is <strong>Xi Rong</strong>?
         </p>
-        <p class="release mono">RELEASE · 24 JUNE 2026</p>
+        <p class="release mono">
+          <img class="flag" src="https://flagcdn.com/th.svg" alt="TH" />
+          RELEASE · 24 JUNE 2026
+        </p>
+        <div class="coming-soon">
+          <span class="cs-label">Other languages · Coming soon</span>
+          <span class="cs-flags">
+            <img class="flag" src="https://flagcdn.com/jp.svg" alt="JP" title="日本語" />
+            <img class="flag" src="https://flagcdn.com/us.svg" alt="EN" title="English" />
+            <img class="flag" src="https://flagcdn.com/kr.svg" alt="KR" title="한국어" />
+            <img class="flag" src="https://flagcdn.com/tw.svg" alt="TW" title="繁體中文 / 台灣" />
+          </span>
+        </div>
         <div class="meta">
           <a class="chip" href="https://www.whif.io/profile/Bonkku" target="_blank" rel="noopener">
             <img class="whif-logo" src="whif-logo.png" alt="" />
