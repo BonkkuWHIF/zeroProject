@@ -7,6 +7,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- ── Google Analytics 4 ─────────────────────────────────────
+       Swap GA_ID to point at a different GA4 property. Leave it blank
+       ("") to disable analytics entirely. -->
+  <script>
+    window.GA_ID = "G-16F3PRWRP6";
+    (function (id) {
+      if (!id || id.indexOf("G-") !== 0) return;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag("js", new Date());
+      gtag("config", id);
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+      document.head.appendChild(s);
+    })(window.GA_ID);
+  </script>
+
   <style>
     :root {
       /* How many viewport-heights of scrolling drive the full video.
@@ -311,7 +330,23 @@
       fill.style.width = (p * 100).toFixed(2) + "%";
       if (p > 0.02) hint.classList.add("hidden");
       else hint.classList.remove("hidden");
+      trackScroll(p);
       startLoop();
+    }
+
+    // Fire a GA4 event the first time the viewer scrubs past each
+    // milestone, so you can see how far people actually watch.
+    const milestones = [0.25, 0.5, 0.75, 1];
+    const hitMilestones = new Set();
+    function trackScroll(p) {
+      if (typeof gtag !== "function") return;
+      for (const m of milestones) {
+        if (p >= m - 0.001 && !hitMilestones.has(m)) {
+          hitMilestones.add(m);
+          const pct = Math.round(m * 100);
+          gtag("event", "video_progress", { percent: pct, value: pct });
+        }
+      }
     }
 
     let pendingSeek = false; // a frame wanted to seek while one was in flight
@@ -376,6 +411,18 @@
     // Passive listeners keep touch scrolling smooth on mobile.
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+
+    // Report which brand link people tap.
+    document.querySelectorAll(".chip").forEach((a) => {
+      a.addEventListener("click", () => {
+        if (typeof gtag === "function") {
+          gtag("event", "link_click", {
+            link_url: a.href,
+            link_text: a.textContent.trim().replace(/\s+/g, " "),
+          });
+        }
+      });
+    });
 
     // Some mobile browsers won't fetch until a play attempt; this nudges
     // buffering without actually starting playback.
