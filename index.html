@@ -6,7 +6,7 @@
   <title>Xi Rong Project</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
 
   <!-- ── Google Analytics 4 ─────────────────────────────────────
        Swap GA_ID to point at a different GA4 property. Leave it blank
@@ -32,6 +32,9 @@
          Higher = slower, more deliberate scrub. */
       --scroll-length: 5;
       --accent: #4fd1c5;
+      /* Thai typeface stack — used in every font-family so Thai glyphs
+         never fall back to a system (mono/serif) face. */
+      --thai: "IBM Plex Sans Thai", "Noto Sans Thai";
     }
 
     * { box-sizing: border-box; }
@@ -41,7 +44,7 @@
       padding: 0;
       background: #000;
       color: #fff;
-      font-family: "Kanit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--thai), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -182,7 +185,7 @@
       opacity: 0;                /* JS drives this */
       will-change: opacity, transform;
       /* Latin glyphs use Space Grotesk; Thai falls back to Kanit. */
-      font-family: "Space Grotesk", "Kanit", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: "Space Grotesk", var(--thai), -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .panel-inner {
       position: relative;
@@ -229,7 +232,7 @@
     }
     .lead {
       margin: 0;
-      font-family: "Kanit", "Space Grotesk", sans-serif;
+      font-family: var(--thai), "Space Grotesk", sans-serif;
       font-weight: 400;
       font-size: clamp(1rem, 3.6vw, 1.35rem);
       line-height: 1.75;
@@ -237,7 +240,9 @@
       text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
     }
     .mono {
-      font-family: "Space Grotesk", ui-monospace, monospace;
+      /* Latin stays techy (Space Grotesk); Thai uses the Thai face
+         instead of falling back to an unstyled monospace. */
+      font-family: "Space Grotesk", var(--thai), ui-monospace, monospace;
       letter-spacing: 0.04em;
     }
 
@@ -272,7 +277,7 @@
       padding: 0;
       display: grid;
       gap: 14px;
-      font-family: "Kanit", "Space Grotesk", sans-serif;
+      font-family: var(--thai), "Space Grotesk", sans-serif;
       font-weight: 400;
       font-size: clamp(1rem, 3.4vw, 1.3rem);
       line-height: 1.55;
@@ -403,9 +408,60 @@
       object-fit: cover;
       margin: -2px 0;
     }
+
+    /* ── Language switcher (fixed, top-right) ───────────────────── */
+    #lang-switch {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      z-index: 25;               /* above panels, below loading overlay */
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+    }
+    .lang {
+      padding: 0;
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0.5;
+      filter: grayscale(0.5);
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    .lang img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .lang:hover { opacity: 0.9; transform: translateY(-1px); }
+    .lang.active {
+      opacity: 1;
+      filter: none;
+      box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(79, 209, 197, 0.6);
+    }
   </style>
 </head>
 <body>
+  <!-- Language switcher · default Thai -->
+  <div id="lang-switch" role="group" aria-label="Language">
+    <button class="lang" data-lang="th" title="ไทย"><img src="https://flagcdn.com/th.svg" alt="ไทย" /></button>
+    <button class="lang" data-lang="en" title="English"><img src="https://flagcdn.com/us.svg" alt="English" /></button>
+    <button class="lang" data-lang="ja" title="日本語"><img src="https://flagcdn.com/jp.svg" alt="日本語" /></button>
+    <button class="lang" data-lang="ko" title="한국어"><img src="https://flagcdn.com/kr.svg" alt="한국어" /></button>
+    <button class="lang" data-lang="zh" title="繁體中文"><img src="https://flagcdn.com/tw.svg" alt="繁體中文" /></button>
+  </div>
+
   <div id="progress"><div id="progress-fill"></div></div>
 
   <div id="scroll-track">
@@ -424,20 +480,20 @@
     <!-- 1 · HERO ────────────────────────────────────────────── -->
     <section class="panel" data-start="0.00" data-end="0.10">
       <div class="panel-inner">
-        <p class="kicker">Classified File</p>
+        <p class="kicker" data-i18n="kicker_classified">Classified File</p>
         <h1 class="title"><span>XI RONG</span><span>PROJECT</span></h1>
       </div>
-    </section>   
+    </section>
 
     <!-- 3 · KNOWN INFORMATION ───────────────────────────────── -->
     <section class="panel" data-start="0.18" data-end="0.35">
       <div class="panel-inner">
-        <p class="kicker">Known Information</p>
+        <p class="kicker" data-i18n="kicker_known">Known Information</p>
         <ul class="readout mono">
-          <li><span class="k">Name</span><span class="v">Xi Rong</span></li>
-          <li><span class="k">Age</span><span class="v">Unknown</span></li>
-          <li><span class="k">Origin</span><span class="v">Unknown</span></li>
-          <li><span class="k">Current Status</span><span class="v active">Active</span></li>
+          <li><span class="k" data-i18n="lbl_name">Name</span><span class="v">Xi Rong</span></li>
+          <li><span class="k" data-i18n="lbl_age">Age</span><span class="v" data-i18n="val_unknown">Unknown</span></li>
+          <li><span class="k" data-i18n="lbl_origin">Origin</span><span class="v" data-i18n="val_unknown">Unknown</span></li>
+          <li><span class="k" data-i18n="lbl_status">Current Status</span><span class="v active" data-i18n="val_active">Active</span></li>
         </ul>
       </div>
     </section>
@@ -445,13 +501,13 @@
     <!-- 5 · ANOMALY REPORT ──────────────────────────────────── -->
     <section class="panel" data-start="0.56" data-end="0.75">
       <div class="panel-inner">
-        <p class="kicker">Anomaly Report</p>
+        <p class="kicker" data-i18n="kicker_anomaly">Anomaly Report</p>
         <ul class="readout mono">
-          <li><span class="k">Human</span><span class="v">No</span></li>
-          <li><span class="k">Machine</span><span class="v">No</span></li>
-          <li><span class="k">AI</span><span class="v">No</span></li>
-          <li><span class="k">Digital Entity</span><span class="v">No</span></li>
-          <li><span class="k">Unknown Entity</span><span class="v active">...</span></li>
+          <li><span class="k" data-i18n="lbl_human">Human</span><span class="v" data-i18n="val_no">No</span></li>
+          <li><span class="k" data-i18n="lbl_machine">Machine</span><span class="v" data-i18n="val_no">No</span></li>
+          <li><span class="k" data-i18n="lbl_ai">AI</span><span class="v" data-i18n="val_no">No</span></li>
+          <li><span class="k" data-i18n="lbl_digital">Digital Entity</span><span class="v" data-i18n="val_no">No</span></li>
+          <li><span class="k" data-i18n="lbl_unknown_entity">Unknown Entity</span><span class="v active">...</span></li>
         </ul>
       </div>
     </section>
@@ -459,10 +515,10 @@
     <!-- 6 · BIOLOGICAL BODY : NOT FOUND (the held beat) ──────── -->
     <section class="panel" data-start="0.85" data-end="0.95">
       <div class="panel-inner">
-        <p class="kicker">Physical Status</p>
+        <p class="kicker" data-i18n="kicker_physical">Physical Status</p>
         <p class="verdict mono">
-          Biological Body :
-          <span class="nf">NOT FOUND</span>
+          <span data-i18n="verdict_body">Biological Body :</span>
+          <span class="nf" data-i18n="verdict_notfound">NOT FOUND</span>
         </p>
       </div>
     </section>
@@ -470,16 +526,16 @@
     <!-- 7 · QUESTION + CTA ──────────────────────────────────── -->
     <section class="panel" data-start="0.95" data-end="1.2">
       <div class="panel-inner">
-        <p class="lead">
+        <p class="lead" data-i18n-html="lead">
           If no body remains,<br />
           then what exactly is <strong>Xi Rong</strong>?
         </p>
         <p class="release mono">
           <img class="flag" src="https://flagcdn.com/th.svg" alt="TH" />
-          RELEASE · 24 JUNE 2026 · 20.00
+          <span data-i18n="release">RELEASE · 24 JUNE 2026 · 20:00</span>
         </p>
         <div class="coming-soon">
-          <span class="cs-label">Other languages · Coming soon</span>
+          <span class="cs-label" data-i18n="whif_translation">WHIF translation · Coming soon</span>
           <span class="cs-flags">
             <img class="flag" src="https://flagcdn.com/jp.svg" alt="JP" title="日本語" />
             <img class="flag" src="https://flagcdn.com/us.svg" alt="EN" title="English" />
@@ -505,7 +561,7 @@
     </section>
   </div>
 
-  <div id="hint">Scroll to play ↓</div>
+  <div id="hint" data-i18n="hint">Scroll to play ↓</div>
 
   <div id="overlay">
     <div id="loader">
@@ -686,6 +742,127 @@
         }
       });
     });
+
+    // ── Language switcher (i18n) ────────────────────────────────
+    // Default is Thai. The choice is saved so it sticks on the next visit.
+    // Brand names ("XI RONG PROJECT", the "Xi Rong" record value) and the
+    // release date stay as-is; everything else swaps per language.
+    const I18N = {
+      th: {
+        kicker_classified: "แฟ้มลับ",
+        kicker_known: "ข้อมูลที่ทราบ",
+        lbl_name: "ชื่อ", lbl_age: "อายุ", lbl_origin: "ที่มา", lbl_status: "สถานะปัจจุบัน",
+        val_unknown: "ไม่ทราบ", val_active: "ยังเคลื่อนไหว",
+        kicker_anomaly: "รายงานความผิดปกติ",
+        lbl_human: "มนุษย์", lbl_machine: "เครื่องจักร", lbl_ai: "ปัญญาประดิษฐ์",
+        lbl_digital: "ตัวตนดิจิทัล", lbl_unknown_entity: "ตัวตนที่ไม่รู้จัก",
+        val_no: "ไม่ใช่",
+        kicker_physical: "สถานะทางกายภาพ",
+        verdict_body: "ร่างกายทางชีวภาพ :", verdict_notfound: "ไม่พบ",
+        lead: "หากไม่มีร่างกายหลงเหลือ<br />แล้วแท้จริงแล้ว <strong>Xi Rong</strong> คือสิ่งใดกันแน่?",
+        release: "RELEASE · 24 มิ.ย. 2026",
+        whif_translation: "ภาษาอื่น WHIF · เร็ว ๆ นี้",
+        hint: "เลื่อนเพื่อเล่น ↓",
+      },
+      en: {
+        kicker_classified: "Classified File",
+        kicker_known: "Known Information",
+        lbl_name: "Name", lbl_age: "Age", lbl_origin: "Origin", lbl_status: "Current Status",
+        val_unknown: "Unknown", val_active: "Active",
+        kicker_anomaly: "Anomaly Report",
+        lbl_human: "Human", lbl_machine: "Machine", lbl_ai: "AI",
+        lbl_digital: "Digital Entity", lbl_unknown_entity: "Unknown Entity",
+        val_no: "No",
+        kicker_physical: "Physical Status",
+        verdict_body: "Biological Body :", verdict_notfound: "NOT FOUND",
+        lead: "If no body remains,<br />then what exactly is <strong>Xi Rong</strong>?",
+        release: "RELEASE · 24 JUNE 2026",
+        whif_translation: "WHIF · Coming soon",
+        hint: "Scroll to play ↓",
+      },
+      ja: {
+        kicker_classified: "機密ファイル",
+        kicker_known: "判明している情報",
+        lbl_name: "名前", lbl_age: "年齢", lbl_origin: "出自", lbl_status: "現在の状態",
+        val_unknown: "不明", val_active: "活動中",
+        kicker_anomaly: "異常報告",
+        lbl_human: "人間", lbl_machine: "機械", lbl_ai: "AI",
+        lbl_digital: "デジタル存在", lbl_unknown_entity: "未知の存在",
+        val_no: "否",
+        kicker_physical: "身体状態",
+        verdict_body: "生物学的肉体 :", verdict_notfound: "発見されず",
+        lead: "肉体が残されていないのなら<br />目の前にいる <strong>Xi Rong</strong> とは一体何者なのか？",
+        release: "公開 · 2026年6月24日 ",
+        whif_translation: "WHIF · 近日公開",
+        hint: "スクロールで再生 ↓",
+      },
+      ko: {
+        kicker_classified: "기밀 파일",
+        kicker_known: "알려진 정보",
+        lbl_name: "이름", lbl_age: "나이", lbl_origin: "출신", lbl_status: "현재 상태",
+        val_unknown: "불명", val_active: "활동 중",
+        kicker_anomaly: "이상 보고서",
+        lbl_human: "인간", lbl_machine: "기계", lbl_ai: "AI",
+        lbl_digital: "디지털 존재", lbl_unknown_entity: "미지의 존재",
+        val_no: "아니오",
+        kicker_physical: "신체 상태",
+        verdict_body: "생물학적 육체 :", verdict_notfound: "발견되지 않음",
+        lead: "육체가 남아 있지 않다면<br />눈앞에 있는 <strong>Xi Rong</strong>은 과연 무엇인가?",
+        release: "출시 · 2026년 6월 24일",
+        whif_translation: "WHIF · 출시 예정",
+        hint: "스크롤하여 재생 ↓",
+      },
+      zh: {
+        kicker_classified: "機密檔案",
+        kicker_known: "已知資訊",
+        lbl_name: "姓名", lbl_age: "年齡", lbl_origin: "來歷", lbl_status: "目前狀態",
+        val_unknown: "未知", val_active: "活動中",
+        kicker_anomaly: "異常報告",
+        lbl_human: "人類", lbl_machine: "機械", lbl_ai: "人工智慧",
+        lbl_digital: "數位存在", lbl_unknown_entity: "未知存在",
+        val_no: "否",
+        kicker_physical: "生理狀態",
+        verdict_body: "生物軀體 :", verdict_notfound: "查無資料",
+        lead: "若軀體不復存在<br />那麼眼前的 <strong>Xi Rong</strong> 究竟是什麼？",
+        release: "上線 · 2026年6月24日",
+        whif_translation: "WHIF · 即將推出",
+        hint: "滑動播放 ↓",
+      },
+    };
+
+    const DEFAULT_LANG = "th";
+    const langButtons = Array.from(document.querySelectorAll(".lang"));
+
+    function applyLang(lang) {
+      const dict = I18N[lang] || I18N[DEFAULT_LANG];
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const v = dict[el.dataset.i18n];
+        if (v != null) el.textContent = v;
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+        const v = dict[el.dataset.i18nHtml];
+        if (v != null) el.innerHTML = v;
+      });
+      // The release date is the Thai launch only — hide it for other languages.
+      const releaseEl = document.querySelector(".release");
+      if (releaseEl) releaseEl.style.display = lang === "th" ? "" : "none";
+      document.documentElement.lang = lang;
+      langButtons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
+      try { localStorage.setItem("xr_lang", lang); } catch (_) {}
+    }
+
+    langButtons.forEach((b) => {
+      b.addEventListener("click", () => {
+        applyLang(b.dataset.lang);
+        if (typeof gtag === "function") {
+          gtag("event", "language_select", { language: b.dataset.lang });
+        }
+      });
+    });
+
+    let savedLang = DEFAULT_LANG;
+    try { savedLang = localStorage.getItem("xr_lang") || DEFAULT_LANG; } catch (_) {}
+    applyLang(I18N[savedLang] ? savedLang : DEFAULT_LANG);
 
     // Some mobile browsers won't fetch until a play attempt; this nudges
     // buffering without actually starting playback.
