@@ -110,6 +110,11 @@
       pointer-events: none;
     }
     #hint.hidden { opacity: 0; }
+    /* On narrow screens the bottom-left preview button reaches the centered
+       hint — lift the hint above it so the two stack instead of overlapping. */
+    @media (max-width: 560px) {
+      #hint { bottom: max(76px, calc(env(safe-area-inset-bottom) + 64px)); }
+    }
 
     /* Loading + error overlays. */
     #overlay {
