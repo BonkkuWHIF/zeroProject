@@ -409,6 +409,51 @@
       margin: -2px 0;
     }
 
+    /* ── Floating "Video Preview" button (fixed, bottom-left) ───── */
+    #preview-btn {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      left: max(16px, env(safe-area-inset-left));
+      z-index: 25;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 18px;
+      font-family: "Space Grotesk", var(--thai), sans-serif;
+      font-size: clamp(12px, 2.8vw, 14px);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #03100e;
+      text-decoration: none;
+      white-space: nowrap;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 8px 26px rgba(79, 209, 197, 0.4),
+                  0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    #preview-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(79, 209, 197, 0.55),
+                  0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+    }
+    #preview-btn svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+    /* Soft pulse ring so the button reads as "tap me". */
+    #preview-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      box-shadow: 0 0 0 0 rgba(79, 209, 197, 0.5);
+      animation: pulse 2.4s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(79, 209, 197, 0.5); }
+      70%  { box-shadow: 0 0 0 16px rgba(79, 209, 197, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(79, 209, 197, 0); }
+    }
+
     /* ── Language switcher (fixed, top-right) ───────────────────── */
     #lang-switch {
       position: fixed;
@@ -560,6 +605,11 @@
       </div>
     </section>
   </div>
+
+  <a id="preview-btn" href="previews.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <span data-i18n="video_preview">Video Preview</span>
+  </a>
 
   <div id="hint" data-i18n="hint">Scroll to play ↓</div>
 
@@ -762,6 +812,7 @@
         lead: "หากไม่มีร่างกายหลงเหลือ<br />แล้วแท้จริงแล้ว <strong>Xi Rong</strong> คือสิ่งใดกันแน่?",
         release: "RELEASE · 24 มิ.ย. 2026",
         whif_translation: "ภาษาอื่น WHIF · เร็ว ๆ นี้",
+        video_preview: "ตัวอย่างวิดีโอ",
         hint: "เลื่อนเพื่อเล่น ↓",
       },
       en: {
@@ -778,6 +829,7 @@
         lead: "If no body remains,<br />then what exactly is <strong>Xi Rong</strong>?",
         release: "RELEASE · 24 JUNE 2026",
         whif_translation: "WHIF · Coming soon",
+        video_preview: "Video Preview",
         hint: "Scroll to play ↓",
       },
       ja: {
@@ -794,6 +846,7 @@
         lead: "肉体が残されていないのなら<br />目の前にいる <strong>Xi Rong</strong> とは一体何者なのか？",
         release: "公開 · 2026年6月24日 ",
         whif_translation: "WHIF · 近日公開",
+        video_preview: "ビデオプレビュー",
         hint: "スクロールで再生 ↓",
       },
       ko: {
@@ -810,6 +863,7 @@
         lead: "육체가 남아 있지 않다면<br />눈앞에 있는 <strong>Xi Rong</strong>은 과연 무엇인가?",
         release: "출시 · 2026년 6월 24일",
         whif_translation: "WHIF · 출시 예정",
+        video_preview: "비디오 미리보기",
         hint: "스크롤하여 재생 ↓",
       },
       zh: {
@@ -826,6 +880,7 @@
         lead: "若軀體不復存在<br />那麼眼前的 <strong>Xi Rong</strong> 究竟是什麼？",
         release: "上線 · 2026年6月24日",
         whif_translation: "WHIF · 即將推出",
+        video_preview: "影片預覽",
         hint: "滑動播放 ↓",
       },
     };
