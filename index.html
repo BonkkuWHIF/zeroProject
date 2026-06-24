@@ -327,7 +327,30 @@
       letter-spacing: 0.18em;
       color: #cfeee9;
       text-shadow: 0 0 22px rgba(79, 209, 197, 0.45);
+      /* Clickable link. The panel above is pointer-events:none (lets the
+         background video stay interactive), so re-enable it just here. */
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
+      font-family: inherit;
+      text-decoration: none;
+      background: none;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.15s ease, color 0.15s ease,
+        text-shadow 0.15s ease, background 0.15s ease;
     }
+    .release:hover,
+    .release:focus-visible {
+      color: #eafffb;
+      text-shadow: 0 0 28px rgba(79, 209, 197, 0.7);
+      background: rgba(79, 209, 197, 0.08);
+      transform: translateY(-1px);
+      outline: none;
+    }
+    .release:active { transform: translateY(0); }
 
     /* Flag images (release + coming-soon). Emoji flags don't render on
        Windows, so we use real images for consistency everywhere. */
@@ -580,10 +603,10 @@
           If no body remains,<br />
           then what exactly is <strong>Xi Rong</strong>?
         </p>
-        <p class="release mono">
+        <a href="https://www.whif.io/characters/7dc35fcf-3fc9-4746-a868-93f549a1a6a9" class="release mono">
           <img class="flag" src="https://flagcdn.com/th.svg" alt="TH" />
           <span data-i18n="release">RELEASE · 24 JUNE 2026 · 20:00</span>
-        </p>
+        </a>
         <div class="coming-soon">
           <span class="cs-label" data-i18n="whif_translation">WHIF translation · Coming soon</span>
           <span class="cs-flags">
@@ -815,7 +838,7 @@
         kicker_physical: "สถานะทางกายภาพ",
         verdict_body: "ร่างกายทางชีวภาพ :", verdict_notfound: "ไม่พบ",
         lead: "หากไม่มีร่างกายหลงเหลือ<br />แล้วแท้จริงแล้ว <strong>Xi Rong</strong> คือสิ่งใดกันแน่?",
-        release: "RELEASE · 24 มิ.ย. 2026",
+        release: "เปิดตัวแล้ว · เข้าชมเลย →",
         whif_translation: "ภาษาอื่น WHIF · เร็ว ๆ นี้",
         video_preview: "ตัวอย่างวิดีโอ",
         hint: "เลื่อนเพื่อเล่น ↓",
