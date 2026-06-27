@@ -523,6 +523,13 @@
       filter: none;
       box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(79, 209, 197, 0.6);
     }
+    /* On mobile, push the switcher down and stack it vertically. */
+    @media (max-width: 560px) {
+      #lang-switch {
+        top: calc(max(12px, env(safe-area-inset-top)) + 20vh);
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
