@@ -619,7 +619,6 @@
           <span class="cs-flags">
             <img class="flag" src="https://flagcdn.com/jp.svg" alt="JP" title="日本語" />
             <img class="flag" src="https://flagcdn.com/us.svg" alt="EN" title="English" />
-            <img class="flag" src="https://flagcdn.com/kr.svg" alt="KR" title="한국어" />
             <img class="flag" src="https://flagcdn.com/tw.svg" alt="TW" title="繁體中文 / 台灣" />
           </span>
         </div>
@@ -896,7 +895,7 @@
         kicker_physical: "신체 상태",
         verdict_body: "생물학적 육체 :", verdict_notfound: "발견되지 않음",
         lead: "육체가 남아 있지 않다면<br />눈앞에 있는 <strong>Xi Rong</strong>은 과연 무엇인가?",
-        release: "출시 · 2026년 6월 24일",
+        release: "출시됨 · 지금 방문하기 →",
         whif_translation: "WHIF · 출시 예정",
         video_preview: "비디오 미리보기",
         hint: "스크롤하여 재생 ↓",
@@ -920,6 +919,13 @@
       },
     };
 
+    // Languages whose WHIF page is live get the "released · visit now" CTA,
+    // each pointing at its own character page + flag.
+    const RELEASE_LINKS = {
+      th: { href: "https://www.whif.io/characters/7dc35fcf-3fc9-4746-a868-93f549a1a6a9", flag: "https://flagcdn.com/th.svg", flagAlt: "TH" },
+      ko: { href: "https://www.whif.io/characters/1f048b0a-d53a-40ab-948f-8805aad9b3f4", flag: "https://flagcdn.com/kr.svg", flagAlt: "KR" },
+    };
+
     const DEFAULT_LANG = "th";
     const langButtons = Array.from(document.querySelectorAll(".lang"));
 
@@ -933,9 +939,20 @@
         const v = dict[el.dataset.i18nHtml];
         if (v != null) el.innerHTML = v;
       });
-      // The release date is the Thai launch only — hide it for other languages.
+      // Show the "released · visit now" CTA only for languages whose WHIF
+      // page is live, pointing it at that language's character page + flag.
       const releaseEl = document.querySelector(".release");
-      if (releaseEl) releaseEl.style.display = lang === "th" ? "" : "none";
+      if (releaseEl) {
+        const link = RELEASE_LINKS[lang];
+        if (link) {
+          releaseEl.style.display = "";
+          releaseEl.href = link.href;
+          const flagEl = releaseEl.querySelector(".flag");
+          if (flagEl) { flagEl.src = link.flag; flagEl.alt = link.flagAlt; }
+        } else {
+          releaseEl.style.display = "none";
+        }
+      }
       document.documentElement.lang = lang;
       langButtons.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
       try { localStorage.setItem("xr_lang", lang); } catch (_) {}
