@@ -96,7 +96,7 @@
     /* Hint that nudges the user to scroll; fades out once they do. */
     #hint {
       position: fixed;
-      bottom: max(24px, env(safe-area-inset-bottom));
+      bottom: calc(max(24px, env(safe-area-inset-bottom)) + 10vh);
       left: 50%;
       transform: translateX(-50%);
       padding: 10px 18px;
@@ -113,7 +113,7 @@
     /* On narrow screens the bottom-left preview button reaches the centered
        hint — lift the hint above it so the two stack instead of overlapping. */
     @media (max-width: 560px) {
-      #hint { bottom: max(76px, calc(env(safe-area-inset-bottom) + 64px)); }
+      #hint { bottom: calc(max(76px, calc(env(safe-area-inset-bottom) + 64px)) + 10vh); }
     }
 
     /* Loading + error overlays. */
@@ -440,7 +440,7 @@
     /* ── Floating "Video Preview" button (fixed, bottom-left) ───── */
     #preview-btn {
       position: fixed;
-      bottom: max(20px, env(safe-area-inset-bottom));
+      bottom: calc(max(20px, env(safe-area-inset-bottom)) + 10vh);
       left: max(16px, env(safe-area-inset-left));
       z-index: 25;
       display: inline-flex;
@@ -617,7 +617,6 @@
         <div class="coming-soon">
           <span class="cs-label" data-i18n="whif_translation">WHIF translation · Coming soon</span>
           <span class="cs-flags">
-            <img class="flag" src="https://flagcdn.com/jp.svg" alt="JP" title="日本語" />
             <img class="flag" src="https://flagcdn.com/us.svg" alt="EN" title="English" />
             <img class="flag" src="https://flagcdn.com/tw.svg" alt="TW" title="繁體中文 / 台灣" />
           </span>
@@ -878,7 +877,7 @@
         kicker_physical: "身体状態",
         verdict_body: "生物学的肉体 :", verdict_notfound: "発見されず",
         lead: "肉体が残されていないのなら<br />目の前にいる <strong>Xi Rong</strong> とは一体何者なのか？",
-        release: "公開 · 2026年6月24日 ",
+        release: "公開済み · 今すぐ見る →",
         whif_translation: "WHIF · 近日公開",
         video_preview: "ビデオプレビュー",
         hint: "スクロールで再生 ↓",
@@ -923,6 +922,7 @@
     // each pointing at its own character page + flag.
     const RELEASE_LINKS = {
       th: { href: "https://www.whif.io/characters/7dc35fcf-3fc9-4746-a868-93f549a1a6a9", flag: "https://flagcdn.com/th.svg", flagAlt: "TH" },
+      ja: { href: "https://www.whif.io/characters/1bd07f69-e2d8-4dc7-bfd4-f17eca14d838", flag: "https://flagcdn.com/jp.svg", flagAlt: "JP" },
       ko: { href: "https://www.whif.io/characters/1f048b0a-d53a-40ab-948f-8805aad9b3f4", flag: "https://flagcdn.com/kr.svg", flagAlt: "KR" },
     };
 
